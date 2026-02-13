@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmed Alaa | Kickboxing Coach & Personal Trainer</title>
+    <meta name="description"
+        content="Professional kickboxing coach and personal trainer with extensive certifications from Egyptian Federation, Faculty of Physical Education, and PADI.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&family=Cairo:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Core Libraries (Deferred for performance) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js" defer></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js" defer></script>
+    <!-- Removed unused PIXI, P5, and Splide to reduce render-blocking resources -->
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-charcoal': '#1a1a1a',
+                        'vibrant-crimson': '#dc2626',
+                        'crimson-hover': '#b91c1c',
+                        'soft-gray': '#9ca3af',
+                        'darker-charcoal': '#0f0f0f'
+                    },
+                    fontFamily: {
+                        'display': ['Playfair Display', 'serif'],
+                        'body': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom CSS will be in style.css */
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(15, 15, 15, 0.9) 100%);
+        }
+
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: all 0.3s ease-out;
+        }
+
+        .reveal-element.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .certification-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        .certification-card:hover {
+            transform: scale(1.05) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.3);
+        }
+
+        .timeline-node {
+            transition: all 0.3s ease;
+        }
+
+        .timeline-node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+        }
+
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #dc2626;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #dc2626;
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: #dc2626;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .skills-chart {
+            width: 100%;
+            height: 400px;
+        }
+
+        .contact-form input,
+        .contact-form textarea,
+        .contact-form select {
+            transition: all 0.3s ease;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus,
+        .contact-form select:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #dc2626 50%, transparent 100%);
+            margin: 4rem 0;
+        }
+    </style>
+</head>
+
+<body class="bg-deep-charcoal text-white font-body">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-deep-charcoal/90 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-display font-bold" data-i18n="nav_brand">Ahmed Alaa</h1>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home"
+                            class="nav-link active text-white hover:text-vibrant-crimson px-3 py-2 text-sm font-medium"
+                            data-i18n="nav_home">Home</a>
+                        <a href="#about"
+                            class="nav-link text-gray-300 hover:text-vibrant-crimson px-3 py-2 text-sm font-medium"
+                            data-i18n="nav_about">About</a>
+                        <a href="#skills"
+                            class="nav-link text-gray-300 hover:text-vibrant-crimson px-3 py-2 text-sm font-medium"
+                            data-i18n="nav_skills">Skills</a>
+                        <a href="#experience"
+                            class="nav-link text-gray-300 hover:text-vibrant-crimson px-3 py-2 text-sm font-medium"
+                            data-i18n="nav_experience">Experience</a>
+                        <a href="#contact"
+                            class="nav-link text-gray-300 hover:text-vibrant-crimson px-3 py-2 text-sm font-medium"
+                            data-i18n="nav_contact">Contact</a>
+
+                        <!-- Language Toggle -->
+                        <div class="flex items-center space-x-4 ml-4 pl-4 border-l border-gray-700">
+                            <button id="lang-toggle"
+                                class="p-2 text-gray-300 hover:text-vibrant-crimson transition-colors"
+                                title="Switch Language">
+                                <span class="text-xs font-bold uppercase">AR</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Navigation Button -->
+                <div class="flex items-center md:hidden border-gray-800">
+                    <!-- Language Toggle for Mobile Header -->
+                    <button id="lang-toggle-header"
+                        class="p-2 me-2 text-gray-300 hover:text-vibrant-crimson transition-colors"
+                        title="Switch Language">
+                        <span class="text-xs font-bold uppercase">AR</span>
+                    </button>
+
+                    <button id="mobile-menu-btn" aria-label="Toggle mobile menu"
+                        class="text-gray-300 hover:text-white focus:outline-none focus:text-white">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-darker-charcoal border-t border-gray-800">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#home" class="block px-3 py-2 text-base font-medium text-white hover:text-vibrant-crimson"
+                    data-i18n="nav_home">Home</a>
+                <a href="#about" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-vibrant-crimson"
+                    data-i18n="nav_about">About</a>
+                <a href="#skills" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-vibrant-crimson"
+                    data-i18n="nav_skills">Skills</a>
+                <a href="#experience"
+                    class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-vibrant-crimson"
+                    data-i18n="nav_experience">Experience</a>
+                <a href="#contact"
+                    class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-vibrant-crimson"
+                    data-i18n="nav_contact">Contact</a>
+
+                <!-- Mobile Language -->
+                <div class="flex items-center justify-around py-4 border-t border-gray-800 mt-4">
+                    <button id="lang-toggle-mobile"
+                        class="flex flex-col items-center p-2 text-gray-300 hover:text-vibrant-crimson transition-colors">
+                        <span class="text-xs font-bold uppercase">AR</span>
+                        <span class="text-[10px] uppercase mt-1" data-i18n="lang_switch">Switch Language</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+            <!-- Background Image -->
+            <div class="absolute inset-0 z-0">
+                <img src="images/hero-portrait.jpg" alt="Ahmed Alaa Professional Portrait"
+                    class="w-full h-full object-cover hero-image" fetchpriority="high">
+                <div class="absolute inset-0 hero-bg"></div>
+            </div>
+
+            <!-- Particle Canvas -->
+            <div id="particle-canvas" class="particle-canvas"></div>
+
+            <!-- Hero Content -->
+            <div class="hero-content text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-black mb-6 reveal-element" data-splitting>
+                    <span data-i18n="hero_name">Ahmed Alaa Mohamed Said Qundel</span>
+                </h1>
+
+                <div class="text-xl sm:text-2xl lg:text-3xl text-gray-200 mb-8 reveal-element">
+                    <span id="typed-text"></span>
+                </div>
+
+                <p class="text-lg mb-12 max-w-2xl mx-auto reveal-element" data-i18n="hero_desc">
+                    Professional kickboxing coach and certified personal trainer with extensive experience
+                    in fitness training, sports rehabilitation, and athletic development.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center reveal-element">
+                    <a href="#skills"
+                        class="btn-primary text-white px-8 py-3 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300"
+                        data-i18n="hero_btn_skills">
+                        View My Certifications
+                    </a>
+                    <a href="resume.pdf" download="Ahmed-Alaa-Resume.pdf" aria-label="Download Ahmed Alaa CV (PDF)"
+                        class="border-2 border-white/20 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-white hover:text-deep-charcoal transition-all duration-300 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span data-i18n="btn_cv">Download CV</span>
+                    </a>
+                    <a href="#contact"
+                        class="border-2 border-vibrant-crimson text-vibrant-crimson px-8 py-3 rounded-lg font-semibold text-lg hover:bg-vibrant-crimson hover:text-white transition-all duration-300"
+                        data-i18n="hero_btn_contact">
+                        Get In Touch
+                    </a>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3">
+                    </path>
+                </svg>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16 reveal-element">
+                    <h2 class="text-4xl font-display font-bold mb-6" data-splitting data-i18n="about_title">
+                        About Me</h2>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="reveal-element order-2 lg:order-1">
+                        <div class="relative group">
+                            <div
+                                class="absolute -inset-4 bg-vibrant-crimson/20 rounded-2xl blur-xl group-hover:bg-vibrant-crimson/30 transition-all duration-500">
+                            </div>
+                            <img src="images/ahmed-alaa-boxing.jpg" alt="Ahmed Alaa"
+                                class="relative w-full rounded-2xl shadow-2xl border border-gray-800 object-cover aspect-[3/4]">
+                            <div
+                                class="absolute bottom-4 left-4 right-4 bg-darker-charcoal/80 backdrop-blur-md p-4 rounded-xl border border-gray-700">
+                                <p class="text-vibrant-crimson font-mono text-sm uppercase tracking-wider mb-1">Lead
+                                    Coach
+                                </p>
+                                <p class="font-bold text-lg">Ahmed Alaa</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal-element order-1 lg:order-2">
+                        <p class="text-xl font-semibold mb-6" data-i18n="about_subtitle">Professional
+                            training tailored to your goals.
+                        </p>
+                        <p class="text-lg text-gray-300 leading-relaxed mb-8" data-i18n="about_text">
+                            I constantly strive to develop my professional coaching skills and regularly participate
+                            with my athletes in local and professional kickboxing tournaments, allowing me to
+                            demonstrate
+                            my passion for fitness, health, and overall well-being. I train, assist, and guide people
+                            to achieve their fitness goals and improve their lifestyles.
+                        </p>
+
+                        <div class="grid grid-cols-3 gap-6 mb-12">
+                            <div class="text-center p-4 bg-gray-900 rounded-xl border border-gray-800">
+                                <div class="text-3xl font-display font-bold text-vibrant-crimson mb-1">15+</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-widest"
+                                    data-i18n="about_stat_certs">Certs</div>
+                            </div>
+                            <div class="text-center p-4 bg-gray-900 rounded-xl border border-gray-800">
+                                <div class="text-3xl font-display font-bold text-vibrant-crimson mb-1">5+</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-widest"
+                                    data-i18n="about_stat_years">Years</div>
+                            </div>
+                            <div class="text-center p-4 bg-gray-900 rounded-xl border border-gray-800">
+                                <div class="text-3xl font-display font-bold text-vibrant-crimson mb-1">100+</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-widest"
+                                    data-i18n="about_stat_athletes">Athletes</div>
+                            </div>
+                        </div>
+
+                        <!-- Download CV in About Section -->
+                        <div class="mb-12">
+                            <a href="resume.pdf" download="Ahmed-Alaa-Resume.pdf" aria-label="Download Ahmed Alaa CV (PDF)"
+                                class="inline-flex items-center gap-2 text-white border border-vibrant-crimson bg-vibrant-crimson/10 hover:bg-vibrant-crimson px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                <span data-i18n="btn_cv">Download CV</span>
+                            </a>
+                            <div class="mt-2 text-sm text-gray-400">If the download doesn't start, <a href="resume.pdf" target="_blank" rel="noopener" class="underline">open the CV</a>.</div>
+                        </div>
+
+                        <div id="skills-chart"
+                            class="skills-chart bg-gray-900 rounded-xl p-6 border border-gray-800 h-[300px]"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills & Certifications Section -->
+        <section id="skills" class="py-20 px-4 sm:px-6 lg:px-8 bg-darker-charcoal">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 reveal-element">
+                    <h2 class="text-4xl font-display font-bold mb-6" data-splitting data-i18n="skills_title">
+                        Skills & Certifications
+                    </h2>
+                    <div class="section-divider"></div>
+                    <p class="text-lg max-w-3xl mx-auto" data-i18n="skills_desc">
+                        Comprehensive qualifications in kickboxing coaching, personal training, sports rehabilitation,
+                        and
+                        diving instruction.
+                    </p>
+                </div>
+
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap justify-center gap-4 mb-12 reveal-element">
+                    <button
+                        class="filter-btn active px-6 py-2 rounded-full border border-vibrant-crimson text-vibrant-crimson font-medium"
+                        data-filter="all" data-i18n="filter_all">
+                        All Certifications
+                    </button>
+                    <button
+                        class="filter-btn px-6 py-2 rounded-full border border-gray-600 text-gray-300 font-medium hover:border-vibrant-crimson"
+                        data-filter="kickboxing" data-i18n="filter_kickboxing">
+                        Kickboxing
+                    </button>
+                    <button
+                        class="filter-btn px-6 py-2 rounded-full border border-gray-600 text-gray-300 font-medium hover:border-vibrant-crimson"
+                        data-filter="fitness" data-i18n="filter_fitness">
+                        Fitness Training
+                    </button>
+                    <button
+                        class="filter-btn px-6 py-2 rounded-full border border-gray-600 text-gray-300 font-medium hover:border-vibrant-crimson"
+                        data-filter="medical" data-i18n="filter_medical">
+                        Medical/First Aid
+                    </button>
+                    <button
+                        class="filter-btn px-6 py-2 rounded-full border border-gray-600 text-gray-300 font-medium hover:border-vibrant-crimson"
+                        data-filter="diving" data-i18n="filter_diving">
+                        Diving/Rescue
+                    </button>
+                </div>
+
+                <!-- Certifications Grid -->
+                <div id="certifications-grid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Kickboxing Certifications -->
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="kickboxing">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2" data-i18n="cert_kickboxing_coach">Kickboxing
+                            Coach</h3>
+                        <p class="text-sm text-gray-400 mb-2" data-i18n="cert_fed_eg">Egyptian Federation</p>
+                        <p class="text-xs font-mono text-vibrant-crimson" data-i18n="cert_prof">Professional
+                            Certification</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="kickboxing">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">International Development</h3>
+                        <p class="text-sm text-gray-400 mb-2">Kickboxing Coaches Seminar</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Advanced Training</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="kickboxing">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Boxing Coach</h3>
+                        <p class="text-sm text-gray-400 mb-2">Egyptian Federation</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Professional License</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="kickboxing">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Boxing Referee</h3>
+                        <p class="text-sm text-gray-400 mb-2">Egyptian Boxing Federation</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Official License</p>
+                    </div>
+
+                    <!-- Fitness Training Certifications -->
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="fitness">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Personal Trainer PT</h3>
+                        <p class="text-sm text-gray-400 mb-2">Faculty of Physical Education, Benha</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Academic Degree</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="fitness">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">CFT Fitness Trainer</h3>
+                        <p class="text-sm text-gray-400 mb-2">Faculty of Physical Education, Benha</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Professional Certificate</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="fitness">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Training Load Management</h3>
+                        <p class="text-sm text-gray-400 mb-2">Faculty of Physical Education, Benha</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Specialized Training</p>
+                    </div>
+
+                    <!-- Medical/First Aid Certifications -->
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="medical">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">First Aid Certified</h3>
+                        <p class="text-sm text-gray-400 mb-2">Faculty of Physical Education, Benha</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Emergency Response</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="medical">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Sports Injury Rehabilitation</h3>
+                        <p class="text-sm text-gray-400 mb-2">Faculty of Physical Education, Benha</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Medical Specialization</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="medical">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Massage Therapist</h3>
+                        <p class="text-sm text-gray-400 mb-2">Faculty of Physical Education, Benha</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Therapeutic License</p>
+                    </div>
+
+                    <!-- Diving/Rescue Certifications -->
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="diving">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Rescue Diver</h3>
+                        <p class="text-sm text-gray-400 mb-2">Egyptian Diving and Rescue Federation</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Advanced Certification</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="diving">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Open Water Diver</h3>
+                        <p class="text-sm text-gray-400 mb-2">PADI Certified</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Entry Level</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="diving">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Advanced Open Water</h3>
+                        <p class="text-sm text-gray-400 mb-2">PADI Certified</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Intermediate Level</p>
+                    </div>
+
+                    <div class="certification-card rounded-lg p-6 border border-gray-700 reveal-element"
+                        data-category="diving">
+                        <div class="w-16 h-16 bg-vibrant-crimson rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Primary & Secondary Care</h3>
+                        <p class="text-sm text-gray-400 mb-2">CPR/First Aid Adult PADI</p>
+                        <p class="text-xs font-mono text-vibrant-crimson">Emergency Response</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16 reveal-element">
+                    <h2 class="text-4xl font-display font-bold mb-6" data-splitting data-i18n="exp_title">
+                        Professional Experience
+                    </h2>
+                    <div class="section-divider"></div>
+                    <p class="text-lg text-gray-300 max-w-3xl mx-auto" data-i18n="exp_subtitle">
+                        Career progression through various prestigious training institutions and sports organizations.
+                    </p>
+                </div>
+
+                <!-- Timeline -->
+                <div class="relative">
+                    <!-- Timeline Line -->
+                    <div
+                        class="timeline-line absolute start-4 md:start-1/2 transform -translate-x-1/2 w-1 h-full bg-gray-700">
+                    </div>
+
+                    <!-- Experience Items -->
+                    <div class="space-y-12">
+                        <!-- 1of1 Academy -->
+                        <div class="relative flex items-center reveal-element justify-start md:justify-center">
+                            <div
+                                class="timeline-node absolute start-4 md:start-1/2 transform -translate-x-1/2 w-4 h-4 bg-vibrant-crimson rounded-full border-4 cursor-pointer z-10">
+                            </div>
+                            <div class="w-full md:w-1/2 ps-12 md:ps-0 md:pe-8 text-start md:text-end">
+                                <div class="timeline-card rounded-lg p-6 border border-gray-700">
+                                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="exp_title_1">1of1
+                                        Academy</h3>
+                                    <p class="text-vibrant-crimson font-medium mb-2" data-i18n="exp_role_1">Kickboxing
+                                        Coach</p>
+                                    <p class="text-gray-400 text-sm mb-4" data-i18n="exp_date_1">Current Position</p>
+                                    <p class="text-gray-300 text-sm leading-relaxed" data-i18n="exp_desc_1">
+                                        Leading kickboxing training programs for competitive athletes and recreational
+                                        practitioners.
+                                        Developing specialized training methodologies for different skill levels.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Champions Academy -->
+                        <div class="relative flex items-center justify-start md:justify-end reveal-element">
+                            <div
+                                class="timeline-node absolute start-4 md:start-1/2 transform -translate-x-1/2 w-4 h-4 bg-vibrant-crimson rounded-full border-4 cursor-pointer z-10">
+                            </div>
+                            <div class="w-full md:w-1/2 ps-12 md:ps-8 text-start">
+                                <div class="timeline-card rounded-lg p-6 border border-gray-700">
+                                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="exp_title_2">Champions
+                                        Academy</h3>
+                                    <p class="text-vibrant-crimson font-medium mb-2" data-i18n="exp_role_2">Fitness
+                                        Coach</p>
+                                    <p class="text-gray-400 text-sm mb-4" data-i18n="exp_date_2">Previous Position</p>
+                                    <p class="text-gray-300 text-sm leading-relaxed" data-i18n="exp_desc_2">
+                                        Provided comprehensive fitness training and kickboxing instruction to diverse
+                                        clientele.
+                                        Specialized in strength conditioning and athletic performance enhancement.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- City Club Banha -->
+                        <div class="relative flex items-center reveal-element justify-start md:justify-center">
+                            <div
+                                class="timeline-node absolute start-4 md:start-1/2 transform -translate-x-1/2 w-4 h-4 bg-vibrant-crimson rounded-full border-4 cursor-pointer z-10">
+                            </div>
+                            <div class="w-full md:w-1/2 ps-12 md:ps-0 md:pe-8 text-start md:text-end">
+                                <div class="timeline-card rounded-lg p-6 border border-gray-700">
+                                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="exp_title_3">City Club
+                                        Banha</h3>
+                                    <p class="text-vibrant-crimson font-medium mb-2" data-i18n="exp_role_3">Personal
+                                        Trainer</p>
+                                    <p class="text-gray-400 text-sm mb-4" data-i18n="exp_date_3">Previous Position</p>
+                                    <p class="text-gray-300 text-sm leading-relaxed" data-i18n="exp_desc_3">
+                                        Delivered personalized training programs for gym members. Focused on weight
+                                        management,
+                                        muscle building, and overall fitness improvement through structured exercise
+                                        plans.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dawly Center -->
+                        <div class="relative flex items-center justify-start md:justify-end reveal-element">
+                            <div
+                                class="timeline-node absolute start-4 md:start-1/2 transform -translate-x-1/2 w-4 h-4 bg-vibrant-crimson rounded-full border-4 cursor-pointer z-10">
+                            </div>
+                            <div class="w-full md:w-1/2 ps-12 md:ps-8 text-start">
+                                <div class="timeline-card rounded-lg p-6 border border-gray-700">
+                                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="exp_title_4">Dawly
+                                        Center</h3>
+                                    <p class="text-vibrant-crimson font-medium mb-2" data-i18n="exp_role_4">Assistant
+                                        Diver</p>
+                                    <p class="text-gray-400 text-sm mb-4" data-i18n="exp_date_4">Starting Position</p>
+                                    <p class="text-gray-300 text-sm leading-relaxed" data-i18n="exp_desc_4">
+                                        Assisted in diving operations and underwater activities. Gained valuable
+                                        experience
+                                        in safety protocols and emergency response procedures in aquatic environments.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 px-4 sm:px-6 lg:px-8 bg-darker-charcoal">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16 reveal-element">
+                    <h2 class="text-4xl font-display font-bold mb-6" data-splitting data-i18n="contact_title">Get In
+                        Touch</h2>
+                    <div class="section-divider"></div>
+                    <p class="text-lg text-gray-300" data-i18n="contact_subtitle">
+                        Ready to start your fitness journey? Contact me for professional training and coaching services.
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Contact Information -->
+                    <div class="reveal-element">
+                        <h3 class="text-2xl font-semibold mb-6" data-i18n="contact_info_title">Contact
+                            Information</h3>
+
+                        <div class="space-y-6">
+                            <div class="flex items-center">
+                                <div
+                                    class="w-12 h-12 bg-vibrant-crimson rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium" data-i18n="contact_name_label">Full Name</p>
+                                    <p class="text-gray-400" data-i18n="hero_name">Ahmed Alaa Mohamed Said Qundel</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center">
+                                <div
+                                    class="w-12 h-12 bg-vibrant-crimson rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium" data-i18n="contact_birth_label">Birthdate</p>
+                                    <p class="text-gray-400" data-i18n="contact_birth_val">February 21, 2003</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center">
+                                <div
+                                    class="w-12 h-12 bg-vibrant-crimson rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium" data-i18n="contact_phone_label">Phone</p>
+                                    <p class="text-gray-400">01000738711</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="reveal-element">
+                        <form class="contact-form space-y-6">
+                            <div class="grid sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-300 mb-2"
+                                        data-i18n="form_name">Name</label>
+                                    <input type="text" id="name" name="name" required
+                                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-vibrant-crimson"
+                                        data-i18n="form_name_placeholder">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-300 mb-2"
+                                        data-i18n="form_email">Email</label>
+                                    <input type="email" id="email" name="email" required
+                                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-vibrant-crimson"
+                                        data-i18n="form_email_placeholder">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-300 mb-2"
+                                    data-i18n="form_phone">Phone</label>
+                                <input type="tel" id="phone" name="phone"
+                                    class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-vibrant-crimson">
+                            </div>
+
+                            <div>
+                                <label for="service" class="block text-sm font-medium text-gray-300 mb-2"
+                                    data-i18n="form_service">Service
+                                    Type</label>
+                                <select id="service" name="service" required
+                                    class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-vibrant-crimson">
+                                    <option value="">Select a service</option>
+                                    <option value="personal-training">Personal Training</option>
+                                    <option value="kickboxing">Kickboxing Lessons</option>
+                                    <option value="rehabilitation">Sports Rehabilitation</option>
+                                    <option value="diving">Diving Instruction</option>
+                                    <option value="consultation">Fitness Consultation</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-300 mb-2"
+                                    data-i18n="form_message">Message</label>
+                                <textarea id="message" name="message" rows="4" required
+                                    class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-vibrant-crimson resize-none"
+                                    placeholder="Tell me about your fitness goals..."
+                                    data-i18n="form_message_placeholder"></textarea>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full btn-primary text-white px-8 py-3 rounded-lg font-semibold text-lg"
+                                data-i18n="form_btn">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-deep-charcoal border-t border-gray-800 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-gray-400 text-sm" data-i18n="footer_copy">
+                © 2024 Ahmed Alaa Mohamed Said Qundel. Professional Kickboxing Coach & Personal Trainer.
+            </p>
+            <p class="text-gray-500 text-xs mt-2" data-i18n="footer_quote">
+                Dedicated to excellence in fitness training, sports rehabilitation, and athletic development.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/i18n.js"></script>
+    <script src="js/script.js" defer></script>
+</body>
+
+</html>
