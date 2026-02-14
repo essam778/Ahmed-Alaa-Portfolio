@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Project custom styles moved here (keep small overrides) */
+.hero-bg {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(15, 15, 15, 0.9) 100%);
+}
+
+.reveal-element {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: all 0.3s ease-out;
+}

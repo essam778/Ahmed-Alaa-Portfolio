@@ -23,28 +23,8 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js" defer></script>
     <!-- Removed unused PIXI, P5, and Splide to reduce render-blocking resources -->
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'deep-charcoal': '#1a1a1a',
-                        'vibrant-crimson': '#dc2626',
-                        'crimson-hover': '#b91c1c',
-                        'soft-gray': '#9ca3af',
-                        'darker-charcoal': '#0f0f0f'
-                    },
-                    fontFamily: {
-                        'display': ['Playfair Display', 'serif'],
-                        'body': ['Inter', 'sans-serif'],
-                        'mono': ['JetBrains Mono', 'monospace']
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Local Tailwind build (replace CDN for production) -->
+    <link rel="stylesheet" href="css/style.css">
 
     <style>
         /* Custom CSS will be in style.css */
