@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&family=Cairo:wght@400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Cairo:wght@400;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Core Libraries (Deferred for performance) -->
@@ -27,125 +27,108 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* Custom CSS will be in style.css */
+        /* Override inline styles for gold theme */
         .hero-bg {
-            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(15, 15, 15, 0.9) 100%);
+            background: linear-gradient(135deg, rgba(5,5,5,0.75) 0%, rgba(10,10,10,0.88) 60%, rgba(245,166,35,0.06) 100%);
         }
-
         .reveal-element {
             opacity: 0;
-            transform: translateY(16px);
-            transition: all 0.3s ease-out;
+            transform: translateY(24px);
+            transition: opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
         }
-
         .reveal-element.revealed {
             opacity: 1;
             transform: translateY(0);
         }
-
         .certification-card {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
             transform-style: preserve-3d;
         }
-
         .certification-card:hover {
-            transform: scale(1.05) rotateX(5deg) rotateY(5deg);
-            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.3);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(245,166,35,0.12);
         }
-
         .timeline-node {
             transition: all 0.3s ease;
         }
-
         .timeline-node:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+            transform: scale(1.4);
+            box-shadow: 0 0 20px rgba(245,166,35,0.6);
         }
-
         .nav-link {
             position: relative;
             overflow: hidden;
         }
-
         .nav-link::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 50%;
             width: 0;
-            height: 2px;
-            background: #dc2626;
+            height: 1.5px;
+            background: linear-gradient(90deg, #F5A623, #FFD54F, #E6941A);
             transition: all 0.3s ease;
             transform: translateX(-50%);
         }
-
         .nav-link:hover::after,
         .nav-link.active::after {
             width: 100%;
         }
-
         .particle-canvas {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1;
         }
-
         .hero-content {
             position: relative;
             z-index: 2;
         }
-
         .filter-btn {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
         }
-
         .filter-btn.active {
-            background: #dc2626;
-            color: white;
+            background: linear-gradient(135deg, #F5A623 0%, #FFD54F 50%, #E6941A 100%);
+            color: #050505;
+            border-color: transparent;
         }
-
         .filter-btn:hover {
-            background: #dc2626;
-            color: white;
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, #F5A623 0%, #FFD54F 50%, #E6941A 100%);
+            color: #050505;
+            border-color: transparent;
+            transform: translateY(-1px);
         }
-
         .skills-chart {
             width: 100%;
             height: 400px;
         }
-
         .contact-form input,
         .contact-form textarea,
         .contact-form select {
             transition: all 0.3s ease;
         }
-
         .contact-form input:focus,
         .contact-form textarea:focus,
         .contact-form select:focus {
-            border-color: #dc2626;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+            border-color: #F5A623;
+            box-shadow: 0 0 0 3px rgba(245,166,35,0.1), 0 0 20px rgba(245,166,35,0.08);
         }
-
         .btn-primary {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            background: linear-gradient(135deg, #F5A623 0%, #FFD54F 50%, #E6941A 100%);
+            color: #050505;
             transition: all 0.3s ease;
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
+            box-shadow: 0 0 30px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15);
+            color: #050505;
         }
-
         .section-divider {
             height: 1px;
-            background: linear-gradient(90deg, transparent 0%, #dc2626 50%, transparent 100%);
-            margin: 4rem 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(245,166,35,0.15) 15%, #F5A623 50%, rgba(245,166,35,0.15) 85%, transparent 100%);
+            margin: 2rem auto 3rem;
+            max-width: 240px;
         }
     </style>
 </head>
@@ -849,6 +832,17 @@
         </div>
     </footer>
 
+    <!-- Gold Cursor Script -->
+    <script>
+      (function() {
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+          document.addEventListener('mousemove', function(e) {
+            document.body.style.setProperty('--cx', e.clientX + 'px');
+            document.body.style.setProperty('--cy', e.clientY + 'px');
+          });
+        }
+      })();
+    </script>
     <!-- JavaScript -->
     <script src="js/i18n.js"></script>
     <script src="js/script.js" defer></script>
